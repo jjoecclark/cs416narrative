@@ -2,8 +2,6 @@
 <html lang="en">
 <head>
     <title>Narrative Visualization</title>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://d3js.org/d3.v7.min.js"></script>
     <script src="https://unpkg.com/@d3/annotation@2.5.0"></script>
     <script src="https://d3js.org/topojson.v3.min.js"></script>
@@ -13,120 +11,86 @@
             margin: 0;
             padding: 0;
             display: flex;
-            justify-content: center;
+            flex-direction: column;
             align-items: center;
+            justify-content: center;
             min-height: 100vh;
             background-color: #f4f4f9;
         }
 
         #container {
-            width: 80%;
-            max-width: 1200px;
-            border: 1px solid #ddd;
-            background-color: #fff;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 900px;
+            padding: 20px;
+            background-color: white;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             border-radius: 8px;
-            overflow: hidden;
         }
 
         header {
-            background-color: #3f51b5;
-            color: #fff;
-            padding: 16px;
             text-align: center;
+            margin-bottom: 20px;
         }
 
         header h1 {
             margin: 0;
+            font-size: 24px;
+            color: #333;
         }
 
         nav {
             margin-top: 10px;
         }
 
-        nav button {
-            background-color: #fff;
-            color: #3f51b5;
-            border: none;
-            border-radius: 4px;
-            padding: 10px 20px;
-            margin: 0 5px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-            font-size: 14px;
-        }
-
-        nav button:hover {
-            background-color: #d7d7f9;
+        nav select, nav input {
+            padding: 5px 10px;
+            margin: 5px;
+            font-size: 16px;
         }
 
         main {
             display: flex;
-            padding: 20px;
-            gap: 20px;
-        }
-
-        #visualization {
-            flex: 2;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            padding: 20px;
-            background-color: #f9f9f9;
-            height: 500px;
-            display: flex;
-            justify-content: center;
+            flex-direction: column;
             align-items: center;
         }
 
-        svg {
+        #visualization {
             width: 100%;
-            height: 100%;
-        }
-
-        #annotations {
-            flex: 1;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            padding: 20px;
-            background-color: #f0f0f0;
-        }
-
-        #annotations h2 {
-            margin-top: 0;
+            margin-top: 20px;
         }
 
         footer {
             text-align: center;
-            background-color: #3f51b5;
-            color: #fff;
-            padding: 10px;
+            margin-top: 20px;
         }
 
         footer p {
             margin: 0;
+            font-size: 14px;
+            color: #777;
         }
     </style>
 </head>
 <body>
     <div id="container">
         <header>
-            <h1>Narrative Visualization</h1>
+            <h1>COVID-19 Time Series Visualization</h1>
             <nav>
-                <button id="scene1-btn">Scene 1</button>
-                <button id="scene2-btn">Scene 2</button>
-                <button id="scene3-btn">Scene 3</button>
+                <label for="stateDropdown">Select State:</label>
+                <select id="stateDropdown">
+                    <!-- Options will be populated dynamically -->
+                </select>
+                <label for="dateFrom">From:</label>
+                <input type="date" id="dateFrom" value="2020-01-21">
+                <label for="dateTo">To:</label>
+                <input type="date" id="dateTo" value="2020-12-31">
             </nav>
         </header>
 
         <main>
             <div id="visualization">
-                <svg id="scene"></svg>
+                <svg id="scene" width="800" height="400"></svg>
             </div>
-
-            <aside id="annotations">
-                <h2>Annotations</h2>
-                <p id="annotation-text">Click on a scene to explore the narrative.</p>
-            </aside>
         </main>
 
         <footer>
