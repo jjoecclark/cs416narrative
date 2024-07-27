@@ -125,33 +125,42 @@ document.addEventListener("DOMContentLoaded", function () {
 
         // Functions to render each scene
         function renderScene1(data) {
-            // Aggregate data by car make
+            // Aggregate data by car make and calculate the average number of cylinders
             const mpgByMake = d3.rollups(data, v => d3.mean(v, d => d.EngineCylinders), d => d.Make);
-
+        
+            // Sort data by the average number of cylinders in descending order
+            mpgByMake.sort((a, b) => d3.descending(a[1], b[1]));
+        
             // Set dimensions and margins for the bar chart
             const margin = { top: 20, right: 30, bottom: 40, left: 100 },
                 width = 800 - margin.left - margin.right,
                 height = 400 - margin.top - margin.bottom;
-
+        
+            // Define x-axis scale
             const x = d3.scaleLinear()
                 .domain([0, d3.max(mpgByMake, d => d[1])])
                 .range([0, width]);
-
+        
+            // Define y-axis scale
             const y = d3.scaleBand()
                 .domain(mpgByMake.map(d => d[0]))
                 .range([0, height])
                 .padding(0.1);
-
+        
+            // Create chart group
             const chart = svg.append("g")
                 .attr("transform", `translate(${margin.left},${margin.top})`);
-
+        
+            // Add y-axis
             chart.append("g")
                 .call(d3.axisLeft(y));
-
+        
+            // Add x-axis
             chart.append("g")
                 .attr("transform", `translate(0,${height})`)
                 .call(d3.axisBottom(x));
-
+        
+            // Add bars to chart
             chart.selectAll(".bar")
                 .data(mpgByMake)
                 .enter()
@@ -162,7 +171,8 @@ document.addEventListener("DOMContentLoaded", function () {
                 .attr("width", d => x(d[1]))
                 .attr("height", y.bandwidth())
                 .attr("fill", "#3f51b5");
-
+        
+            // Add labels to bars
             chart.selectAll(".label")
                 .data(mpgByMake)
                 .enter()
@@ -173,7 +183,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 .attr("fill", "#fff")
                 .attr("text-anchor", "end")
                 .text(d => d[1].toFixed(1));
-
+        
             // Annotations for Scene 1
             const annotations = [
                 {
@@ -188,11 +198,12 @@ document.addEventListener("DOMContentLoaded", function () {
                     subject: { radius: 20 },
                 },
             ];
-
+        
+            // Add annotations
             const makeAnnotations = d3.annotation()
                 .type(d3.annotationCalloutCircle)
                 .annotations(annotations);
-
+        
             svg.append("g")
                 .attr("transform", `translate(${margin.left},${margin.top})`)
                 .call(makeAnnotations);
