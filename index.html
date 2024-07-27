@@ -74,12 +74,10 @@
 <body>
     <div id="container">
         <header>
-            <h1>COVID-19 Time Series Visualization</h1>
+            <h1>"Drill-Down" Visualization of COVID-19 Cases in 2020</h1>
             <nav>
                 <label for="stateDropdown">Select State:</label>
-                <select id="stateDropdown">
-                    <!-- Options will be populated dynamically, with "ALL" as the default -->
-                </select>
+                <select id="stateDropdown"></select>
                 <label for="dateFrom">From:</label>
                 <input type="date" id="dateFrom" value="2020-01-21">
                 <label for="dateTo">To:</label>
@@ -88,6 +86,7 @@
         </header>
 
         <main>
+            <p>COVID-19 was and still is a major public health concern. The plot below shows the cumulative number of COVI-19 cases in 2020 for each state. By inspecting the plot, it is clear that the US as a whole experienced a surge of cases throughout the year. However, different states in different regions had different trends with respect to COVID-19 cases. Select a state and a time range from the drop down to drill down into specific states and time periods to examine how separate areas of the country were impacted by COVID-19 cases.</p>
             <div id="visualization">
                 <svg id="scene" width="800" height="400"></svg>
             </div>
