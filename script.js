@@ -116,14 +116,6 @@ document.addEventListener("DOMContentLoaded", function () {
             const chart = svg.append("g")
                 .attr("transform", `translate(${margin.left},${margin.top})`);
 
-            const y = d3.scaleLinear()
-                .domain([0, 140])  // Set the scale between 0 and 140
-                .range([height, 0]);
-
-            const y = d3.scaleLinear()
-                .domain([0, 140])  // Set the scale between 0 and 140
-                .range([height, 0]);
-
             chart.append("g")
                 .call(d3.axisLeft(y));
 
@@ -188,7 +180,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 .range([0, width]);
         
             const y = d3.scaleLinear()
-                .domain([0, d3.max(data, d => d.AverageCityMPG)])
+                .domain([0, 140])
                 .range([height, 0]);
         
             const chart = svg.append("g")
@@ -355,8 +347,8 @@ document.addEventListener("DOMContentLoaded", function () {
                 .domain([0, d3.max(data, d => d.EngineCylinders)])
                 .range([0, width]);
         
-            const y1 = d3.scaleLinear()
-                .domain([0, d3.max(data, d => d.AverageHighwayMPG)])
+            const y = d3.scaleLinear()
+                .domain([0, 140])
                 .range([height, 0]);
         
             const chart = svg.append("g")
