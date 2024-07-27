@@ -274,69 +274,172 @@ document.addEventListener("DOMContentLoaded", function () {
                 .attr("transform", `translate(${margin.left},${margin.top})`)
                 .call(makeAnnotations);
         }
+        
         function renderScene3(data) {
-            // Aggregate data by fuel type
-            const fuelData = d3.rollups(data, v => v.length, d => d.Fuel);
+            // // Aggregate data by fuel type
+            // const fuelData = d3.rollups(data, v => v.length, d => d.Fuel);
 
-            // Set dimensions and margins for the pie chart
-            const width = 500,
-                height = 500,
-                radius = Math.min(width, height) / 2;
+            // // Set dimensions and margins for the pie chart
+            // const width = 500,
+            //     height = 500,
+            //     radius = Math.min(width, height) / 2;
 
-            const color = d3.scaleOrdinal(d3.schemeCategory10);
+            // const color = d3.scaleOrdinal(d3.schemeCategory10);
 
-            const arc = d3.arc()
-                .outerRadius(radius - 10)
-                .innerRadius(0);
+            // const arc = d3.arc()
+            //     .outerRadius(radius - 10)
+            //     .innerRadius(0);
 
-            const labelArc = d3.arc()
-                .outerRadius(radius - 40)
-                .innerRadius(radius - 40);
+            // const labelArc = d3.arc()
+            //     .outerRadius(radius - 40)
+            //     .innerRadius(radius - 40);
 
-            const pie = d3.pie()
-                .sort(null)
-                .value(d => d[1]);
+            // const pie = d3.pie()
+            //     .sort(null)
+            //     .value(d => d[1]);
 
+            // const chart = svg.append("g")
+            //     .attr("transform", `translate(${width / 2},${height / 2})`);
+
+            // const g = chart.selectAll(".arc")
+            //     .data(pie(fuelData))
+            //     .enter()
+            //     .append("g")
+            //     .attr("class", "arc");
+
+            // g.append("path")
+            //     .attr("d", arc)
+            //     .style("fill", d => color(d.data[0]));
+
+            // g.append("text")
+            //     .attr("transform", d => `translate(${labelArc.centroid(d)})`)
+            //     .attr("dy", ".35em")
+            //     .attr("text-anchor", "middle")
+            //     .text(d => `${d.data[0]} (${d.data[1]})`);
+
+            // // Annotations for Scene 3
+            // const annotations = [
+            //     {
+            //         note: {
+            //             label: "Gasoline is the most common fuel type.",
+            //             title: "Fuel Distribution",
+            //         },
+            //         x: 0,
+            //         y: 0,
+            //         dy: -100,
+            //         dx: 100,
+            //         subject: { radius: 60, radiusPadding: 10 },
+            //     },
+            // ];
+
+            // const makeAnnotations = d3.annotation()
+            //     .type(d3.annotationCalloutCircle)
+            //     .annotations(annotations);
+
+            // svg.append("g")
+            //     .attr("transform", `translate(${width / 2},${height / 2})`)
+            //     .call(makeAnnotations);
+            // Set dimensions and margins for the scatter plot
+            const margin = { top: 40, right: 30, bottom: 70, left: 70 },
+                width = 800 - margin.left - margin.right,
+                height = 400 - margin.top - margin.bottom;
+        
+            const x = d3.scaleLinear()
+                .domain([0, d3.max(data, d => d.EngineCylinders)])
+                .range([0, width]);
+        
+            const y = d3.scaleLinear()
+                .domain([0, d3.max(data, d => d.AverageHighwayMPG)])
+                .range([height, 0]);
+        
             const chart = svg.append("g")
-                .attr("transform", `translate(${width / 2},${height / 2})`);
-
-            const g = chart.selectAll(".arc")
-                .data(pie(fuelData))
-                .enter()
-                .append("g")
-                .attr("class", "arc");
-
-            g.append("path")
-                .attr("d", arc)
-                .style("fill", d => color(d.data[0]));
-
-            g.append("text")
-                .attr("transform", d => `translate(${labelArc.centroid(d)})`)
-                .attr("dy", ".35em")
+                .attr("transform", `translate(${margin.left},${margin.top})`);
+        
+            // Append X axis
+            chart.append("g")
+                .attr("transform", `translate(0,${height})`)
+                .call(d3.axisBottom(x))
+                .append("text") // Axis title
+                .attr("class", "axis-title")
+                .attr("x", width / 2)
+                .attr("y", 40)
+                .attr("fill", "black")
                 .attr("text-anchor", "middle")
-                .text(d => `${d.data[0]} (${d.data[1]})`);
-
-            // Annotations for Scene 3
+                .text("Engine Cylinders");
+        
+            // Append Y axis
+            chart.append("g")
+                .call(d3.axisLeft(y))
+                .append("text") // Axis title
+                .attr("class", "axis-title")
+                .attr("transform", "rotate(-90)")
+                .attr("x", -height / 2)
+                .attr("y", -50)
+                .attr("fill", "black")
+                .attr("text-anchor", "middle")
+                .text("Average Highway MPG");
+        
+            // Plot title
+            chart.append("text")
+                .attr("class", "plot-title")
+                .attr("x", width / 2)
+                .attr("y", -10)
+                .attr("fill", "black")
+                .attr("text-anchor", "middle")
+                .style("font-size", "16px")
+                .text("Engine Cylinders vs. Average Highway MPG");
+        
+            // Scatter plot circles
+            chart.selectAll("circle")
+                .data(data)
+                .enter()
+                .append("circle")
+                .attr("cx", d => x(d.EngineCylinders))
+                .attr("cy", d => y(d.AverageHighwayMPG))
+                .attr("r", 5)
+                .attr("fill", "#f04e30")
+                .attr("opacity", 0.6);
+        
+            // Line of best fit
+            const lineData = calculateBestFitLine(data);
+            chart.append("line")
+                .attr("class", "best-fit-line")
+                .attr("x1", x(lineData.x1))
+                .attr("y1", y(lineData.y1))
+                .attr("x2", x(lineData.x2))
+                .attr("y2", y(lineData.y2))
+                .attr("stroke", "steelblue")
+                .attr("stroke-width", 2);
+        
+            // R^2 Text
+            chart.append("text")
+                .attr("x", width - 100)
+                .attr("y", 20)
+                .attr("fill", "steelblue")
+                .style("font-size", "12px")
+                .text(`R² = ${lineData.rSquared.toFixed(3)}`);
+        
+            // Annotations for Scene 2
             const annotations = [
                 {
                     note: {
-                        label: "Gasoline is the most common fuel type.",
-                        title: "Fuel Distribution",
+                        label: "Higher engine cylinders tend to have lower city MPG.",
+                        title: "Trend Observation",
                     },
-                    x: 0,
-                    y: 0,
-                    dy: -100,
-                    dx: 100,
-                    subject: { radius: 60, radiusPadding: 10 },
+                    x: x(8),
+                    y: y(12),
+                    dy: -50,
+                    dx: -70,
+                    subject: { radius: 20, radiusPadding: 10 },
                 },
             ];
-
+        
             const makeAnnotations = d3.annotation()
                 .type(d3.annotationCalloutCircle)
                 .annotations(annotations);
-
+        
             svg.append("g")
-                .attr("transform", `translate(${width / 2},${height / 2})`)
+                .attr("transform", `translate(${margin.left},${margin.top})`)
                 .call(makeAnnotations);
         }
     });
