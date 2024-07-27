@@ -15,6 +15,22 @@ document.addEventListener("DOMContentLoaded", function () {
         currentScene: 1,
     };
 
+    // Triggers for scene changes
+    scene1Button.addEventListener("click", function () {
+        state.currentScene = 1;
+        updateScene();
+    });
+
+    scene2Button.addEventListener("click", function () {
+        state.currentScene = 2;
+        updateScene();
+    });
+
+    scene3Button.addEventListener("click", function () {
+        state.currentScene = 3;
+        updateScene();
+    });
+
     // Load the CSV data
     d3.csv("cars2017.csv").then(function (data) {
         // Prepare the data (parse strings to numbers where necessary)
@@ -23,6 +39,9 @@ document.addEventListener("DOMContentLoaded", function () {
             d.AverageHighwayMPG = +d.AverageHighwayMPG;
             d.AverageCityMPG = +d.AverageCityMPG;
         });
+
+        // Initialize the first scene
+        updateScene();
 
         // Function to update scene
         function updateScene() {
@@ -245,24 +264,5 @@ document.addEventListener("DOMContentLoaded", function () {
                 .attr("transform", `translate(${width / 2},${height / 2})`)
                 .call(makeAnnotations);
         }
-
-        // Initialize the first scene
-        updateScene();
-
-        // Triggers for scene changes
-        scene1Button.addEventListener("click", function () {
-            state.currentScene = 1;
-            updateScene();
-        });
-    
-        scene2Button.addEventListener("click", function () {
-            state.currentScene = 2;
-            updateScene();
-        });
-    
-        scene3Button.addEventListener("click", function () {
-            state.currentScene = 3;
-            updateScene();
-        });
     });
 });
