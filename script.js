@@ -126,7 +126,7 @@ document.addEventListener("DOMContentLoaded", function () {
         // Functions to render each scene
         function renderScene1(data) {
             // Aggregate data by car make
-            const mpgByMake = d3.rollups(data, v => d3.mean(v, d => d.AverageHighwayMPG), d => d.Make);
+            const mpgByMake = d3.rollups(data, v => d3.mean(v, d => d.EngineCylinders), d => d.Make);
 
             // Set dimensions and margins for the bar chart
             const margin = { top: 20, right: 30, bottom: 40, left: 100 },
