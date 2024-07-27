@@ -355,7 +355,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 .domain([0, d3.max(data, d => d.EngineCylinders)])
                 .range([0, width]);
         
-            const y = d3.scaleLinear()
+            const y1 = d3.scaleLinear()
                 .domain([0, d3.max(data, d => d.AverageHighwayMPG)])
                 .range([height, 0]);
         
