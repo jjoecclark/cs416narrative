@@ -1,7 +1,6 @@
 function calculateBestFitLine(data) {
     const xSeries = data.map(d => d.EngineCylinders);
     const ySeries = data.map(d => d.AverageCityMPG);
-
     const xMean = d3.mean(xSeries);
     const yMean = d3.mean(ySeries);
 
