@@ -1,36 +1,4 @@
 document.addEventListener("DOMContentLoaded", function () {
-    // Scene buttons
-    const scene1Button = document.getElementById("scene1-btn");
-    const scene2Button = document.getElementById("scene2-btn");
-    const scene3Button = document.getElementById("scene3-btn");
-
-    // Annotation text
-    const annotationText = document.getElementById("annotation-text");
-
-    // SVG container
-    const svg = d3.select("#scene");
-
-    // State parameters
-    const state = {
-        currentScene: 1,
-    };
-
-    // Triggers for scene changes
-    scene1Button.addEventListener("click", function () {
-        state.currentScene = 1;
-        updateScene();
-    });
-
-    scene2Button.addEventListener("click", function () {
-        state.currentScene = 2;
-        updateScene();
-    });
-
-    scene3Button.addEventListener("click", function () {
-        state.currentScene = 3;
-        updateScene();
-    });
-
     // Load the CSV data
     d3.csv("cars2017.csv").then(function (data) {
         // Prepare the data (parse strings to numbers where necessary)
@@ -38,6 +6,38 @@ document.addEventListener("DOMContentLoaded", function () {
             d.EngineCylinders = +d.EngineCylinders;
             d.AverageHighwayMPG = +d.AverageHighwayMPG;
             d.AverageCityMPG = +d.AverageCityMPG;
+        });
+        
+        // Scene buttons
+        const scene1Button = document.getElementById("scene1-btn");
+        const scene2Button = document.getElementById("scene2-btn");
+        const scene3Button = document.getElementById("scene3-btn");
+    
+        // Annotation text
+        const annotationText = document.getElementById("annotation-text");
+    
+        // SVG container
+        const svg = d3.select("#scene");
+    
+        // State parameters
+        const state = {
+            currentScene: 1,
+        };
+    
+        // Triggers for scene changes
+        scene1Button.addEventListener("click", function () {
+            state.currentScene = 1;
+            updateScene();
+        });
+    
+        scene2Button.addEventListener("click", function () {
+            state.currentScene = 2;
+            updateScene();
+        });
+    
+        scene3Button.addEventListener("click", function () {
+            state.currentScene = 3;
+            updateScene();
         });
 
         // Initialize the first scene
