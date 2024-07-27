@@ -116,6 +116,14 @@ document.addEventListener("DOMContentLoaded", function () {
             const chart = svg.append("g")
                 .attr("transform", `translate(${margin.left},${margin.top})`);
 
+            const y = d3.scaleLinear()
+                .domain([0, 140])  // Set the scale between 0 and 140
+                .range([height, 0]);
+
+            const y = d3.scaleLinear()
+                .domain([0, 140])  // Set the scale between 0 and 140
+                .range([height, 0]);
+
             chart.append("g")
                 .call(d3.axisLeft(y));
 
