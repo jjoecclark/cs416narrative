@@ -15,22 +15,6 @@ document.addEventListener("DOMContentLoaded", function () {
         currentScene: 1,
     };
 
-    // Triggers for scene changes
-    scene1Button.addEventListener("click", function () {
-        state.currentScene = 1;
-        updateScene();
-    });
-
-    scene2Button.addEventListener("click", function () {
-        state.currentScene = 2;
-        updateScene();
-    });
-
-    scene3Button.addEventListener("click", function () {
-        state.currentScene = 3;
-        updateScene();
-    });
-
     // Load the CSV data
     d3.csv("cars2017.csv").then(function (data) {
         // Prepare the data (parse strings to numbers where necessary)
@@ -264,5 +248,21 @@ document.addEventListener("DOMContentLoaded", function () {
 
         // Initialize the first scene
         updateScene();
+
+        // Triggers for scene changes
+        scene1Button.addEventListener("click", function () {
+            state.currentScene = 1;
+            updateScene();
+        });
+    
+        scene2Button.addEventListener("click", function () {
+            state.currentScene = 2;
+            updateScene();
+        });
+    
+        scene3Button.addEventListener("click", function () {
+            state.currentScene = 3;
+            updateScene();
+        });
     });
 });
