@@ -9,7 +9,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const dateToInput = document.getElementById("dateTo");
 
     let data; // Will store CSV data
-    let currentState = "Washington"; // Default state
+    let currentState = "ALL"; // Default to "ALL"
     let dateFrom = "2020-01-21"; // Default date range start
     let dateTo = "2020-12-31"; // Default date range end
 
@@ -23,6 +23,12 @@ document.addEventListener("DOMContentLoaded", function () {
         }));
 
         const uniqueStates = Array.from(new Set(data.map(d => d.state)));
+        // Add an "ALL" option to the dropdown
+        const allOption = document.createElement("option");
+        allOption.value = "ALL";
+        allOption.textContent = "ALL";
+        stateDropdown.appendChild(allOption);
+
         uniqueStates.forEach(state => {
             const option = document.createElement("option");
             option.value = state;
@@ -50,11 +56,9 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     function renderScene1() {
-        // Filter data based on state and date range
+        // Filter data based on the selected date range
         const filteredData = data.filter(d => {
-            return d.state === currentState &&
-                d.date >= new Date(dateFrom) &&
-                d.date <= new Date(dateTo);
+            return d.date >= new Date(dateFrom) && d.date <= new Date(dateTo);
         });
 
         // Set x and y scales
@@ -100,35 +104,87 @@ document.addEventListener("DOMContentLoaded", function () {
             .attr("transform", "rotate(-90)")
             .text("Cases");
 
-        // Add line for cases
-        chart.append("path")
-            .datum(filteredData)
-            .attr("fill", "none")
-            .attr("stroke", "#f04e30")
-            .attr("stroke-width", 2)
-            .attr("d", d3.line()
-                .x(d => x(d.date))
-                .y(d => y(d.cases))
-            );
+        if (currentState === "ALL") {
+            // Group data by state
+            const dataByState = d3.group(filteredData, d => d.state);
 
-        // Add circles for each data point
-        chart.selectAll("circle")
-            .data(filteredData)
-            .enter()
-            .append("circle")
-            .attr("cx", d => x(d.date))
-            .attr("cy", d => y(d.cases))
-            .attr("r", 3)
-            .attr("fill", "#f04e30")
-            .attr("opacity", 0.8);
+            const color = d3.scaleOrdinal()
+                .domain(Array.from(dataByState.keys()))
+                .range(d3.schemeCategory10);
 
-        // Add plot title
-        svg.append("text")
-            .attr("x", width / 2 + margin.left)
-            .attr("y", margin.top / 2)
-            .attr("text-anchor", "middle")
-            .attr("font-size", "20px")
-            .attr("font-weight", "bold")
-            .text(`COVID-19 Cases in ${currentState} (${dateFrom} to ${dateTo})`);
+            dataByState.forEach((stateData, state) => {
+                // Add line for each state
+                chart.append("path")
+                    .datum(stateData)
+                    .attr("fill", "none")
+                    .attr("stroke", color(state))
+                    .attr("stroke-width", 1.5)
+                    .attr("d", d3.line()
+                        .x(d => x(d.date))
+                        .y(d => y(d.cases))
+                    )
+                    .append("title")
+                    .text(state);
+
+                // Add circles for each data point for tooltip
+                chart.selectAll(`circle.${state}`)
+                    .data(stateData)
+                    .enter()
+                    .append("circle")
+                    .attr("class", state)
+                    .attr("cx", d => x(d.date))
+                    .attr("cy", d => y(d.cases))
+                    .attr("r", 3)
+                    .attr("fill", color(state))
+                    .attr("opacity", 0.7)
+                    .append("title")
+                    .text(d => `${state}: ${d.cases}`);
+            });
+
+            // Add plot title
+            svg.append("text")
+                .attr("x", width / 2 + margin.left)
+                .attr("y", margin.top / 2)
+                .attr("text-anchor", "middle")
+                .attr("font-size", "20px")
+                .attr("font-weight", "bold")
+                .text(`COVID-19 Cases for All States (${dateFrom} to ${dateTo})`);
+        } else {
+            // Filter data for the selected state
+            const stateData = filteredData.filter(d => d.state === currentState);
+
+            // Add line for selected state
+            chart.append("path")
+                .datum(stateData)
+                .attr("fill", "none")
+                .attr("stroke", "#f04e30")
+                .attr("stroke-width", 2)
+                .attr("d", d3.line()
+                    .x(d => x(d.date))
+                    .y(d => y(d.cases))
+                );
+
+            // Add circles for each data point
+            chart.selectAll("circle")
+                .data(stateData)
+                .enter()
+                .append("circle")
+                .attr("cx", d => x(d.date))
+                .attr("cy", d => y(d.cases))
+                .attr("r", 3)
+                .attr("fill", "#f04e30")
+                .attr("opacity", 0.8)
+                .append("title")
+                .text(d => `${currentState}: ${d.cases}`);
+
+            // Add plot title
+            svg.append("text")
+                .attr("x", width / 2 + margin.left)
+                .attr("y", margin.top / 2)
+                .attr("text-anchor", "middle")
+                .attr("font-size", "20px")
+                .attr("font-weight", "bold")
+                .text(`COVID-19 Cases in ${currentState} (${dateFrom} to ${dateTo})`);
+        }
     }
 });
