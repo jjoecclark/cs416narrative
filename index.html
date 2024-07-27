@@ -1,1 +1,39 @@
-<h1>Title</h1>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Narrative Visualization</title>
+    <!--link rel="stylesheet" href="style.css"-->
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="https://unpkg.com/@d3/annotation@2.5.0"></script>
+    <script src="https://d3js.org/topojson.v3.min.js"></script>
+</head>
+<body>
+    <div id="container">
+        <header>
+            <h1>Narrative Visualization</h1>
+            <nav>
+                <button id="scene1-btn">Scene 1</button>
+                <button id="scene2-btn">Scene 2</button>
+                <button id="scene3-btn">Scene 3</button>
+            </nav>
+        </header>
+
+        <main>
+            <div id="visualization">
+                <svg id="scene"></svg>
+            </div>
+
+            <aside id="annotations">
+                <h2>Annotations</h2>
+                <p id="annotation-text">Click on a scene to explore the narrative.</p>
+            </aside>
+        </main>
+
+        <footer>
+            <p>&copy; 2024 Narrative Visualization</p>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
