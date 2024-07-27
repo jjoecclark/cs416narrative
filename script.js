@@ -104,6 +104,15 @@ document.addEventListener("DOMContentLoaded", function () {
             .attr("transform", "rotate(-90)")
             .text("Cases");
 
+        // Create a tooltip for displaying deaths information
+        const tooltip = svg.append("text")
+            .attr("class", "tooltip")
+            .attr("x", margin.left)
+            .attr("y", margin.top / 2)
+            .attr("font-size", "14px")
+            .attr("fill", "#333")
+            .style("visibility", "hidden");
+
         if (currentState === "ALL") {
             // Group data by state
             const dataByState = d3.group(filteredData, d => d.state);
@@ -114,7 +123,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
             dataByState.forEach((stateData, state) => {
                 // Add line for each state
-                chart.append("path")
+                const line = chart.append("path")
                     .datum(stateData)
                     .attr("fill", "none")
                     .attr("stroke", color(state))
@@ -123,8 +132,15 @@ document.addEventListener("DOMContentLoaded", function () {
                         .x(d => x(d.date))
                         .y(d => y(d.cases))
                     )
-                    .append("title")
-                    .text(state);
+                    .attr("id", `line-${state}`)
+                    .on("click", () => {
+                        const totalDeaths = d3.sum(stateData, d => d.deaths);
+                        tooltip.text(`${state}: Total Deaths = ${totalDeaths}`)
+                            .style("visibility", "visible")
+                            .attr("x", width / 2)
+                            .attr("text-anchor", "middle")
+                            .attr("fill", color(state));
+                    });
 
                 // Add circles for each data point for tooltip
                 chart.selectAll(`circle.${state}`)
@@ -149,12 +165,13 @@ document.addEventListener("DOMContentLoaded", function () {
                 .attr("font-size", "20px")
                 .attr("font-weight", "bold")
                 .text(`COVID-19 Cases for All States (${dateFrom} to ${dateTo})`);
+
         } else {
             // Filter data for the selected state
             const stateData = filteredData.filter(d => d.state === currentState);
 
             // Add line for selected state
-            chart.append("path")
+            const line = chart.append("path")
                 .datum(stateData)
                 .attr("fill", "none")
                 .attr("stroke", "#f04e30")
@@ -162,7 +179,15 @@ document.addEventListener("DOMContentLoaded", function () {
                 .attr("d", d3.line()
                     .x(d => x(d.date))
                     .y(d => y(d.cases))
-                );
+                )
+                .on("click", () => {
+                    const totalDeaths = d3.sum(stateData, d => d.deaths);
+                    tooltip.text(`${currentState}: Total Deaths = ${totalDeaths}`)
+                        .style("visibility", "visible")
+                        .attr("x", width / 2)
+                        .attr("text-anchor", "middle")
+                        .attr("fill", "#f04e30");
+                });
 
             // Add circles for each data point
             chart.selectAll("circle")
