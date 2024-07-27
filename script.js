@@ -1,4 +1,4 @@
-function calculateBestFitLine(data) {
+function calculateBestFitLineCity(data) {
     const xSeries = data.map(d => d.EngineCylinders);
     const ySeries = data.map(d => d.AverageCityMPG);
     const xMean = d3.mean(xSeries);
@@ -25,6 +25,35 @@ function calculateBestFitLine(data) {
         rSquared: rSquared
     };
 }
+
+function calculateBestFitLineHW(data) {
+    const xSeries = data.map(d => d.EngineCylinders);
+    const ySeries = data.map(d => d.AverageHighwayMPG);
+    const xMean = d3.mean(xSeries);
+    const yMean = d3.mean(ySeries);
+
+    // Calculate coefficients for the line of best fit
+    const numerator = d3.sum(xSeries.map((x, i) => (x - xMean) * (ySeries[i] - yMean)));
+    const denominator = d3.sum(xSeries.map(x => (x - xMean) ** 2));
+
+    const slope = numerator / denominator;
+    const intercept = yMean - slope * xMean;
+
+    // Calculate R^2
+    const yPredicted = xSeries.map(x => slope * x + intercept);
+    const ssTotal = d3.sum(ySeries.map(y => (y - yMean) ** 2));
+    const ssResidual = d3.sum(ySeries.map((y, i) => (y - yPredicted[i]) ** 2));
+    const rSquared = 1 - ssResidual / ssTotal;
+
+    return {
+        x1: d3.min(xSeries),
+        y1: slope * d3.min(xSeries) + intercept,
+        x2: d3.max(xSeries),
+        y2: slope * d3.max(xSeries) + intercept,
+        rSquared: rSquared
+    };
+}
+
 
 document.addEventListener("DOMContentLoaded", function () {
     // Load the CSV data
@@ -180,7 +209,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 .range([0, width]);
         
             const y = d3.scaleLinear()
-                .domain([0, 140])
+                .domain([0, 150])
                 .range([height, 0]);
         
             const chart = svg.append("g")
@@ -232,7 +261,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 .attr("opacity", 0.6);
         
             // Line of best fit
-            const lineData = calculateBestFitLine(data);
+            const lineData = calculateBestFitLineCity(data);
             chart.append("line")
                 .attr("class", "best-fit-line")
                 .attr("x1", x(lineData.x1))
@@ -348,7 +377,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 .range([0, width]);
         
             const y = d3.scaleLinear()
-                .domain([0, 140])
+                .domain([0, 150])
                 .range([height, 0]);
         
             const chart = svg.append("g")
@@ -400,7 +429,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 .attr("opacity", 0.6);
         
             // Line of best fit
-            const lineData = calculateBestFitLine(data);
+            const lineData = calculateBestFitLineHW(data);
             chart.append("line")
                 .attr("class", "best-fit-line")
                 .attr("x1", x(lineData.x1))
