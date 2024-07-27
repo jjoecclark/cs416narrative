@@ -244,23 +244,37 @@ document.addEventListener("DOMContentLoaded", function () {
                 .text(`COVID-19 Cases in ${currentState} (${dateFrom} to ${dateTo})`);
 
             // Annotate the date with the most cases for the selected state
-            const maxCasesData = stateData.reduce((a, b) => a.cases > b.cases ? a : b);
+            let maxIncreaseData = { date: null, increase: -Infinity }; // Initialize with a very low number
+            for (let i = 1; i < stateData.length; i++) {
+                // Calculate the increase in cases
+                const increase = stateData[i].cases - stateData[i - 1].cases;
+            
+                // Check if the current increase is greater than the current maximum
+                if (increase > maxIncreaseData.increase) {
+                    maxIncreaseData = {
+                        date: stateData[i].date,
+                        increase: increase,
+                    };
+                }
+            }
+            
+            // Annotate the date with the most significant increase in cases
             const annotation = [{
                 note: {
-                    label: `Most cases occurred on ${d3.timeFormat("%B %d, %Y")(maxCasesData.date)}`,
-                    title: `Cases: ${maxCasesData.cases}`,
+                    label: `Largest increase occurred on ${d3.timeFormat("%B %d, %Y")(maxIncreaseData.date)}`,
+                    title: `Increase: ${maxIncreaseData.increase}`,
                     align: "middle",
                 },
-                x: x(maxCasesData.date),
-                y: y(maxCasesData.cases),
+                x: x(maxIncreaseData.date),
+                y: y(maxIncreaseData.increase + stateData[stateData.findIndex(d => d.date === maxIncreaseData.date) - 1].cases),
                 dy: -30,
                 dx: 20,
             }];
-
-            const makeAnnotations = d3.annotation()
-                .type(d3.annotationCalloutElbow)
+            
+            const makeAnnotations = d3.annotation() // Use the correct method
+                .type(d3.annotationCalloutElbow)    // Use the annotation type
                 .annotations(annotation);
-
+            
             svg.append("g")
                 .attr("class", "annotation-group")
                 .attr("transform", `translate(${margin.left},${margin.top})`)
