@@ -40,9 +40,6 @@ document.addEventListener("DOMContentLoaded", function () {
             d.AverageCityMPG = +d.AverageCityMPG;
         });
 
-        // Initialize the first scene
-        updateScene();
-
         // Function to update scene
         function updateScene() {
             svg.html(""); // Clear existing scene
@@ -264,5 +261,8 @@ document.addEventListener("DOMContentLoaded", function () {
                 .attr("transform", `translate(${width / 2},${height / 2})`)
                 .call(makeAnnotations);
         }
+
+        // Initialize the first scene
+        updateScene();
     });
 });
