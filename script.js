@@ -11,7 +11,7 @@ document.addEventListener("DOMContentLoaded", function () {
     let data;
     let currentState = "ALL";
     let dateFrom = "2020-01-21";
-    let dateTo = "2020-12-31";
+    let dateTo = "2024-1-1";
     d3.csv("us-states.csv").then(csvData => {
         data = csvData.map(d => ({
             date: d3.timeParse("%Y-%m-%d")(d.date),
