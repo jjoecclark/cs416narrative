@@ -172,29 +172,6 @@ document.addEventListener("DOMContentLoaded", function () {
                 .attr("font-weight", "bold")
                 .text(`COVID-19 Cases for All States (${dateFrom} to ${dateTo})`);
 
-            // Annotate the date with the most cases for all states
-            const maxCasesData = filteredData.reduce((a, b) => a.cases > b.cases ? a : b);
-            const annotation = [{
-                note: {
-                    label: `Most cases occurred on ${d3.timeFormat("%B %d, %Y")(maxCasesData.date)}`,
-                    title: `Cases: ${maxCasesData.cases}`,
-                    align: "middle",
-                },
-                x: x(maxCasesData.date),
-                y: y(maxCasesData.cases),
-                dy: -30,
-                dx: 20,
-            }];
-
-            const makeAnnotations = d3.annotation()
-                .type(d3.annotationCalloutElbow)
-                .annotations(annotation);
-
-            svg.append("g")
-                .attr("class", "annotation-group")
-                .attr("transform", `translate(${margin.left},${margin.top})`)
-                .call(makeAnnotations);
-
         } else {
             // Filter data for the selected state
             const stateData = filteredData.filter(d => d.state === currentState);
